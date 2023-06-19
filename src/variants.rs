@@ -1,19 +1,21 @@
+use std::rc::Rc;
+
 use crate::fencer::{Bout, BoutScore, Fencer};
 
 pub trait Round {
-    fn get_fencers(&self) -> &[Fencer];
+    fn get_fencers(&self) -> &[Rc<Fencer>];
     fn add_results(&mut self, b: BoutScore);
     fn is_done(&self) -> bool;
     fn get_bouts(&self) -> Vec<Bout>;
 }
 
-pub struct Poule<'a> {
-    fencers: Vec<Fencer>,
-    bouts: Vec<Bout<'a>>,
+pub struct Poule {
+    fencers: Vec<Rc<Fencer>>,
+    bouts: Vec<Bout>,
 }
 
-impl Round for Poule<'_> {
-    fn get_fencers(&self) -> &[Fencer] {
+impl Round for Poule {
+    fn get_fencers(&self) -> &[Rc<Fencer>] {
         &self.fencers
     }
 
@@ -39,13 +41,14 @@ impl Round for Poule<'_> {
 impl Poule {
     fn new(fencers: Vec<Fencer>) -> Self {
         let mut bouts = Vec::new();
-        let mut f = fencers.clone().into_iter();
+        let fencers: Vec<Rc<Fencer>> = fencers.iter().map(|x| Rc::new(x.clone())).collect();
+        let mut f = fencers.iter();
         while let Some(first) = f.next() {
             let iterable = f.clone();
             for second in iterable {
                 bouts.push(Bout::Upcoming {
-                    left: &first,
-                    right: &second,
+                    left: first.clone(),
+                    right: second.clone(),
                 })
             }
         }
@@ -60,7 +63,7 @@ mod tests {
 
     use super::Poule;
 
-    const MOCK_SIZE: i64 = 10000;
+    const MOCK_SIZE: i64 = 10_000;
 
     #[test]
     fn test_poule_has_all_bouts() {
@@ -73,9 +76,8 @@ mod tests {
                 "TEST".to_string(),
             ))
         }
-        println!("{:?}", l.pop());
 
         let p = Poule::new(l);
-        //assert_eq!(p.get_bouts().len() as i64, MOCK_SIZE * (MOCK_SIZE - 1) / 2)
+        assert_eq!(p.get_bouts().len() as i64, MOCK_SIZE * (MOCK_SIZE - 1) / 2)
     }
 }

@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 #[derive(Clone, PartialEq, Debug)]
 pub struct Fencer {
     firstname: String,
@@ -6,21 +8,21 @@ pub struct Fencer {
 }
 
 #[derive(Debug, Clone)]
-pub enum Bout<'a> {
-    Upcoming { left: &'a Fencer, right: &'a Fencer },
-    Finished(BoutScore<'a>),
+pub enum Bout {
+    Upcoming { left: Rc<Fencer>, right: Rc<Fencer>},
+    Finished(BoutScore),
 }
 
 #[derive(Debug, Clone)]
-pub struct BoutScore<'a> {
-    winner: &'a Fencer,
+pub struct BoutScore {
+    winner: Rc<Fencer>,
     winner_score: i32,
-    loser: &'a Fencer,
+    loser: Rc<Fencer>,
     loser_score: i32,
 }
 
-impl <'a> BoutScore<'a> {
-    pub fn new(winner: &Fencer, winner_score: i32, loser: &Fencer, loser_score: i32) -> Self {
+impl BoutScore{
+    pub fn new(winner: Rc<Fencer>, winner_score: i32, loser: Rc<Fencer>, loser_score: i32) -> Self {
         BoutScore {
             winner,
             winner_score,
@@ -30,7 +32,7 @@ impl <'a> BoutScore<'a> {
     }
 
     pub fn has_fencers(&self, f: &Fencer, s: &Fencer) -> bool {
-        (self.winner == f && self.loser == s) || (self.loser == f && self.winner == s)
+        (&*self.winner == f && &*self.loser == s) || (&*self.loser == f && &*self.winner == s)
     }
 }
 
