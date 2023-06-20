@@ -18,5 +18,5 @@ pub(super) enum Command {
 #[derive(Args, Clone)]
 pub(super) struct GlobalOpts {
     #[clap(long, short, global = true)]
-    name: String,
+    name: Option<String>,
 }

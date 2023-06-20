@@ -1,47 +1,21 @@
-use std::rc::Rc;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, PartialEq, Debug)]
+#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
 pub struct Fencer {
     firstname: String,
-    surname: String,
-    nationality: String,
+    surname: Option<String>,
+    nationality: Option<String>,
 }
-
-#[derive(Debug, Clone)]
-pub enum Bout {
-    Upcoming { left: Rc<Fencer>, right: Rc<Fencer>},
-    Finished(BoutScore),
-}
-
-#[derive(Debug, Clone)]
-pub struct BoutScore {
-    winner: Rc<Fencer>,
-    winner_score: i32,
-    loser: Rc<Fencer>,
-    loser_score: i32,
-}
-
-impl BoutScore{
-    pub fn new(winner: Rc<Fencer>, winner_score: i32, loser: Rc<Fencer>, loser_score: i32) -> Self {
-        BoutScore {
-            winner,
-            winner_score,
-            loser,
-            loser_score,
-        }
-    }
-
-    pub fn has_fencers(&self, f: &Fencer, s: &Fencer) -> bool {
-        (&*self.winner == f && &*self.loser == s) || (&*self.loser == f && &*self.winner == s)
-    }
-}
-
 impl Fencer {
-    pub fn new(name: String, surname: String, nationality: String) -> Self {
+    pub fn new(name: String, surname: Option<String>, nationality: Option<String>) -> Self {
         Fencer {
-            firstname: name,
-            surname,
-            nationality,
+            firstname: name.trim().to_string(),
+            surname: surname.map(|x| x.trim().to_string()),
+            nationality: nationality.map(|x| x.trim().to_string()),
         }
+    }
+
+    pub fn print(&self) -> String{
+        format!("\n{}\n{}\n{}", self.firstname, self.surname.clone().unwrap_or("Unknown".to_string()), self.nationality.clone().unwrap_or("Unknown".to_string()))
     }
 }

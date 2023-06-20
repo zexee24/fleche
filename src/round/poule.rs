@@ -1,17 +1,23 @@
 use std::rc::Rc;
 
-use crate::fencer::{Bout, BoutScore, Fencer};
+use serde::{Serialize, Deserialize};
 
-pub trait Round {
-    fn get_fencers(&self) -> &[Rc<Fencer>];
-    fn add_results(&mut self, b: BoutScore);
-    fn is_done(&self) -> bool;
-    fn get_bouts(&self) -> Vec<Bout>;
-}
+use crate::bout::{Bout, BoutScore};
+use crate::fencer::Fencer;
 
+use super::Round;
+
+#[derive(Serialize, Deserialize)]
 pub struct Poule {
     fencers: Vec<Rc<Fencer>>,
     bouts: Vec<Bout>,
+}
+
+struct Results<'a>{
+    matches: &'a [Bout],
+    wins: i32,
+    given: i32,
+    recieved: i32,
 }
 
 impl Round for Poule {
@@ -21,7 +27,7 @@ impl Round for Poule {
 
     fn add_results(&mut self, bout: BoutScore) {
         if let Some(n) = self.bouts.iter().position(|b| match b {
-            Bout::Upcoming { left, right } => bout.has_fencers(left, right),
+            Bout::Upcoming { left, right } => b.has_fencers(left, right),
             Bout::Finished(_) => false,
         }) {
             self.bouts.push(Bout::Finished(bout));
@@ -54,12 +60,20 @@ impl Poule {
         }
         Poule { fencers, bouts }
     }
+    
+    fn solve<'a>(&self) -> Vec<(Rc<Fencer>, Results<'a>)>{
+        self.fencers.iter().map(|x| (x.clone(), self.get_results_for_fencer(&x))).collect()
+    }
+
+    fn get_results_for_fencer<'a>(&self, fencer: &Fencer) -> Results<'a>{
+        self.bouts.iter().filter(|x| x.contains_fencer(fencer))
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use crate::fencer::Fencer;
-    use crate::variants::Round;
+    use crate::round::Round;
 
     use super::Poule;
 
@@ -70,11 +84,7 @@ mod tests {
         let mut l: Vec<Fencer> = Vec::new();
 
         for i in 0..MOCK_SIZE {
-            l.push(Fencer::new(
-                i.to_string(),
-                i.to_string(),
-                "TEST".to_string(),
-            ))
+            l.push(Fencer::new(i.to_string(), None, None))
         }
 
         let p = Poule::new(l);
