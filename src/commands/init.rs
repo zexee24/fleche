@@ -8,7 +8,11 @@ use crate::fencer::Fencer;
 pub fn init() -> Result<(), Box<dyn Error>> {
     let fencer_list = get_fencers_from_user()?;
 
-    println!("Entered {:?} fencers\n{}", fencer_list.len(), fencer_list.iter().map(|x| x.print()).collect::<String>());
+    println!(
+        "Entered {:?} fencers\n{}",
+        fencer_list.len(),
+        fencer_list.iter().map(|x| x.print()).collect::<String>()
+    );
 
     Ok(())
 }
@@ -21,7 +25,7 @@ fn get_fencers_from_user() -> Result<Vec<Fencer>, Box<dyn Error>> {
     Ok(res.split("\n\n").filter_map(get_next_fencer).collect())
 }
 
-fn get_next_fencer(lines: &str) -> Option<Fencer>{
+fn get_next_fencer(lines: &str) -> Option<Fencer> {
     let mut l = lines.lines();
     let first_name = l.next()?;
     let surname = l.next();

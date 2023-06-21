@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::fencer::Fencer;
 
@@ -11,13 +11,13 @@ pub enum Bout {
     Finished(BoutScore),
 }
 
-impl Bout{
+impl Bout {
     pub fn has_fencers(&self, f: &Fencer, s: &Fencer) -> bool {
         self.contains_fencer(f) && self.contains_fencer(s)
     }
 
-    pub fn contains_fencer(&self, f: &Fencer) -> bool{
-        match self{
+    pub fn contains_fencer(&self, f: &Fencer) -> bool {
+        match self {
             Bout::Upcoming { left, right } => &**left == f || &**right == f,
             Bout::Finished(b) => &*b.winner == f || &*b.loser == f,
         }

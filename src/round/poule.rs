@@ -1,6 +1,6 @@
 use std::rc::Rc;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::bout::{Bout, BoutScore};
 use crate::fencer::Fencer;
@@ -13,7 +13,7 @@ pub struct Poule {
     bouts: Vec<Bout>,
 }
 
-struct Results<'a>{
+struct Results<'a> {
     matches: &'a [Bout],
     wins: i32,
     given: i32,
@@ -60,12 +60,15 @@ impl Poule {
         }
         Poule { fencers, bouts }
     }
-    
-    fn solve<'a>(&self) -> Vec<(Rc<Fencer>, Results<'a>)>{
-        self.fencers.iter().map(|x| (x.clone(), self.get_results_for_fencer(&x))).collect()
+
+    fn solve<'a>(&self) -> Vec<(Rc<Fencer>, Results<'a>)> {
+        self.fencers
+            .iter()
+            .map(|x| (x.clone(), self.get_results_for_fencer(&x)))
+            .collect()
     }
 
-    fn get_results_for_fencer<'a>(&self, fencer: &Fencer) -> Results<'a>{
+    fn get_results_for_fencer<'a>(&self, fencer: &Fencer) -> Results<'a> {
         self.bouts.iter().filter(|x| x.contains_fencer(fencer))
     }
 }

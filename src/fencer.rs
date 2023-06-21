@@ -15,7 +15,12 @@ impl Fencer {
         }
     }
 
-    pub fn print(&self) -> String{
-        format!("\n{}\n{}\n{}", self.firstname, self.surname.clone().unwrap_or("Unknown".to_string()), self.nationality.clone().unwrap_or("Unknown".to_string()))
+    pub fn print(&self) -> String {
+        format!(
+            "\n{}\n{}\n{}",
+            self.firstname,
+            self.surname.clone().unwrap_or("Unknown".to_string()),
+            self.nationality.clone().unwrap_or("Unknown".to_string())
+        )
     }
 }
