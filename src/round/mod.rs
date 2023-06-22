@@ -1,13 +1,23 @@
+use std::fmt::Display;
 use std::rc::Rc;
 
 pub mod poule;
 
+use strum::EnumIter;
+
 use crate::bout::{Bout, BoutScore};
 use crate::fencer::Fencer;
 
+#[derive(EnumIter)]
 pub enum RoundTypes {
     Poule,
     Cup,
+}
+
+impl Display for RoundTypes {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.to_string())
+    }
 }
 
 pub trait Round: serde_traitobject::Serialize + serde_traitobject::Deserialize {

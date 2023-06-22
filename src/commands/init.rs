@@ -8,11 +8,7 @@ use crate::fencer::Fencer;
 pub fn init() -> Result<(), Box<dyn Error>> {
     let fencer_list = get_fencers_from_user()?;
 
-    println!(
-        "Entered {:?} fencers\n{}",
-        fencer_list.len(),
-        fencer_list.iter().map(|x| x.print()).collect::<String>()
-    );
+    println!("Entered {:?} fencers", fencer_list.len(),);
 
     Ok(())
 }

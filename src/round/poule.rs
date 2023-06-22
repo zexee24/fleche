@@ -69,7 +69,8 @@ impl Poule {
     }
 
     fn get_results_for_fencer<'a>(&self, fencer: &Fencer) -> Results<'a> {
-        self.bouts.iter().filter(|x| x.contains_fencer(fencer))
+        self.bouts.iter().filter(|x| x.contains_fencer(fencer));
+        todo!()
     }
 }
 
