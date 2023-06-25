@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Clone, PartialEq, Debug, Serialize, Deserialize)]
+#[derive(Clone, PartialEq, Eq, Debug, Serialize, Deserialize)]
 pub struct Fencer {
     firstname: String,
     surname: Option<String>,
@@ -19,8 +19,12 @@ impl Fencer {
         format!(
             "\n{}\n{}\n{}",
             self.firstname,
-            self.surname.clone().unwrap_or("Unknown".to_string()),
-            self.nationality.clone().unwrap_or("Unknown".to_string())
+            self.surname
+                .clone()
+                .unwrap_or_else(|| "Unknown".to_string()),
+            self.nationality
+                .clone()
+                .unwrap_or_else(|| "Unknown".to_string())
         )
     }
 }

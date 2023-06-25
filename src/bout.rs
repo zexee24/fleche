@@ -26,19 +26,47 @@ impl Bout {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BoutScore {
-    winner: Rc<Fencer>,
-    winner_score: i32,
-    loser: Rc<Fencer>,
-    loser_score: i32,
+    pub winner: Rc<Fencer>,
+    pub winner_score: u16,
+    pub loser: Rc<Fencer>,
+    pub loser_score: u16,
 }
 
 impl BoutScore {
-    pub fn new(winner: Rc<Fencer>, winner_score: i32, loser: Rc<Fencer>, loser_score: i32) -> Self {
+    pub fn new(winner: Rc<Fencer>, winner_score: u16, loser: Rc<Fencer>, loser_score: u16) -> Self {
         BoutScore {
             winner,
             winner_score,
             loser,
             loser_score,
+        }
+    }
+
+    pub fn did_win(&self, fencer: &Fencer) -> Option<bool> {
+        if &*self.winner == fencer {
+            return Some(true);
+        }
+
+        if &*self.loser == fencer {
+            return Some(false);
+        }
+        None
+    }
+
+    pub fn get_score(&self, fencer: &Fencer) -> Option<u16> {
+        if &*self.winner == fencer {
+            return Some(self.winner_score);
+        }
+
+        if &*self.loser == fencer {
+            return Some(self.loser_score);
+        }
+        None
+    }
+    pub fn get_for_opponent(&self, fencer: &Fencer) -> Option<u16> {
+        match &*self.winner == fencer {
+            true => self.get_score(&self.loser),
+            false => self.get_score(&self.winner),
         }
     }
 }
