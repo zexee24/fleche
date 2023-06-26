@@ -14,8 +14,9 @@ pub fn init() -> Result<(), Box<dyn Error>> {
 }
 
 fn get_fencers_from_user() -> Result<Vec<Fencer>, Box<dyn Error>> {
+    let sys_editor = std::env::var("EDITOR")?;
     let res = Editor::new("Enter fencers, First name, Surname and Nationality on diffirent lines. With blank lines between fencers")
-        .with_editor_command(&OsString::from("nvim"))
+        .with_editor_command(&OsString::from(sys_editor))
         .prompt()?;
 
     Ok(res.split("\n\n").filter_map(get_next_fencer).collect())
