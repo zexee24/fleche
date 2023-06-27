@@ -9,7 +9,7 @@ use crate::round::Round;
 
 #[derive(Serialize, Deserialize)]
 pub struct State {
-    fencers: Rc<[Fencer]>,
+    fencers: Rc<[Rc<Fencer>]>,
     rounds: Vec<Ro>,
 }
 
@@ -24,5 +24,20 @@ impl State {
 
     pub fn load(p: &str) -> Result<Self, Box<dyn Error>> {
         Ok(serde_json::from_str::<State>(&read_to_string(p)?)?)
+    }
+
+    pub fn fencer_amout(&self) -> usize {
+        self.fencers.len()
+    }
+
+    pub fn last_round(&self) -> Option<&dyn Round> {
+        self.rounds.last().map(|x| x.0.as_ref())
+    }
+
+    pub fn add_round(&mut self, r: Box<dyn Round>) {
+        self.rounds.push(Ro(r));
+    }
+    pub fn get_fencers(&self) -> Rc<[Rc<Fencer>]> {
+        self.fencers.clone()
     }
 }

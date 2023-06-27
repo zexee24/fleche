@@ -32,8 +32,8 @@ impl Results {
 }
 
 impl Round for Poule {
-    fn get_fencers(&self) -> &[Rc<Fencer>] {
-        &self.fencers
+    fn get_fencers(&self) -> Vec<Rc<Fencer>> {
+        self.fencers.clone()
     }
 
     fn add_results(&mut self, bout: BoutScore) {
@@ -55,12 +55,9 @@ impl Round for Poule {
     fn get_bouts(&self) -> Vec<Rc<Bout>> {
         self.bouts.clone()
     }
-}
 
-impl Poule {
-    fn new(fencers: Vec<Fencer>) -> Self {
+    fn new(fencers: Vec<Rc<Fencer>>) -> Self {
         let mut bouts = Vec::new();
-        let fencers: Vec<Rc<Fencer>> = fencers.iter().map(|x| Rc::new(x.clone())).collect();
         let mut f = fencers.iter();
         while let Some(first) = f.next() {
             let iterable = f.clone();
@@ -73,7 +70,9 @@ impl Poule {
         }
         Poule { fencers, bouts }
     }
+}
 
+impl Poule {
     fn solve(&self) -> Vec<(Rc<Fencer>, Results)> {
         self.fencers
             .iter()
@@ -107,7 +106,9 @@ impl Poule {
 }
 
 #[cfg(test)]
-mod tests {
+pub mod tests {
+    use std::rc::Rc;
+
     use crate::bout::BoutScore;
     use crate::fencer::Fencer;
     use crate::round::Round;
@@ -122,10 +123,10 @@ mod tests {
         assert_eq!(p.get_bouts().len() as u32, MOCK_SIZE * (MOCK_SIZE - 1) / 2)
     }
 
-    fn mock_few_fencers(n: u32) -> Vec<Fencer> {
+    pub fn mock_few_fencers(n: u32) -> Vec<Rc<Fencer>> {
         let mut v = Vec::new();
         for i in 0..n {
-            v.push(Fencer::new(i.to_string(), None, None))
+            v.push(Rc::new(Fencer::new(i.to_string(), None, None)))
         }
 
         v

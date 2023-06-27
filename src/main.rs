@@ -9,7 +9,6 @@ mod args;
 pub mod bout;
 pub mod commands;
 pub mod fencer;
-pub mod file_management;
 pub mod round;
 pub mod state;
 
