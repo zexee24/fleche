@@ -5,16 +5,14 @@ use std::rc::Rc;
 use serde::{Deserialize, Serialize};
 
 use crate::fencer::Fencer;
+use crate::round::group::Group;
 use crate::round::Round;
 
 #[derive(Serialize, Deserialize)]
 pub struct State {
     fencers: Rc<[Rc<Fencer>]>,
-    rounds: Vec<Ro>,
+    rounds: Vec<Group>,
 }
-
-#[derive(Serialize, Deserialize)]
-struct Ro(#[serde(with = "serde_traitobject")] Box<dyn Round>);
 
 impl State {
     pub fn save(&self, p: &str) -> Result<(), Box<dyn Error>> {
@@ -35,7 +33,7 @@ impl State {
     }
 
     pub fn add_round(&mut self, r: Box<dyn Round>) {
-        self.rounds.push(Ro(r));
+        self.rounds.push(Round::new(r));
     }
     pub fn get_fencers(&self) -> Rc<[Rc<Fencer>]> {
         self.fencers.clone()

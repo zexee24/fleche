@@ -10,16 +10,16 @@ use crate::bout::{Bout, BoutScore};
 use crate::fencer::Fencer;
 
 #[derive(EnumIter)]
-pub enum RoundTypes {
+pub enum RoundType {
     Poule,
     Cup,
 }
 
-impl Display for RoundTypes {
+impl Display for RoundType {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let w = match self {
-            RoundTypes::Poule => "Poule",
-            RoundTypes::Cup => "Cup",
+            RoundType::Poule => "Poule",
+            RoundType::Cup => "Cup",
         };
         write!(f, "{}", w)
     }
@@ -31,6 +31,5 @@ pub trait Round: serde_traitobject::Serialize + serde_traitobject::Deserialize {
     fn is_done(&self) -> bool;
     fn get_bouts(&self) -> Vec<Rc<Bout>>;
     fn new(fencers: Vec<Rc<Fencer>>) -> Self
-    where
-        Self: Sized;
+        where Self: Sized;
 }
