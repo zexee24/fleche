@@ -6,9 +6,12 @@ use crate::bout::{Bout, BoutScore};
 use crate::fencer::Fencer;
 
 use super::Round;
+use serde_traitobject::Box;
 
-#[derive(Clone, Serialize, Deserialize)]
-pub struct Group(pub Vec<Box<dyn Round>>);
+type Ro = Box<dyn Round>;
+
+#[derive(Serialize, Deserialize)]
+pub struct Group(pub Vec<Ro>);
 
 impl Group {
     fn get_fencers(&self) -> Vec<Rc<Fencer>> {
@@ -27,7 +30,7 @@ impl Group {
         self.0.iter().flat_map(|x| x.get_bouts()).collect()
     }
 
-    fn new(xs: Vec<Box<dyn Round>>) -> Group {
+    pub(crate) fn new(xs: Vec<Box<dyn Round>>) -> Group {
         Group(xs)
     }
 }

@@ -28,12 +28,12 @@ impl State {
         self.fencers.len()
     }
 
-    pub fn last_round(&self) -> Option<&dyn Round> {
-        self.rounds.last().map(|x| x.0.as_ref())
+    pub fn last_round(&self) -> Option<&Group> {
+        self.rounds.last()
     }
 
-    pub fn add_round(&mut self, r: Box<dyn Round>) {
-        self.rounds.push(Round::new(r));
+    pub fn add_round(&mut self, r: Group) {
+        self.rounds.push(r);
     }
     pub fn get_fencers(&self) -> Rc<[Rc<Fencer>]> {
         self.fencers.clone()
