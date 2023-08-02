@@ -31,5 +31,6 @@ pub trait Round: serde_traitobject::Serialize + serde_traitobject::Deserialize {
     fn is_done(&self) -> bool;
     fn get_bouts(&self) -> Vec<Rc<Bout>>;
     fn new(fencers: Vec<Rc<Fencer>>) -> Self
-        where Self: Sized;
+    where
+        Self: Sized;
 }
